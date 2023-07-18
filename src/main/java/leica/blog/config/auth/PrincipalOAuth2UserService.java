@@ -20,6 +20,7 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor
 public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+
     private final MemberRepository memberRepository;
     private final HttpSession session;
 
@@ -54,7 +55,6 @@ public class PrincipalOAuth2UserService implements OAuth2UserService<OAuth2UserR
     // 조회된 회원이 없을 경우에는 OAuthAttributes를 사용하여 새로운 Member 엔티티 생성
     private Member saveOrUpdate(OAuthAttributes attributes) {
         Member member = memberRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
                 .orElse(attributes.toEntity());
 
         return memberRepository.save(member);
