@@ -1,17 +1,15 @@
 package leica.blog.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Entity
-public class Role {
+@RequiredArgsConstructor
+@Getter
+public enum Role {
 
-    @Id @GeneratedValue
-    @Column(name = "role_id")
-    private Long id;
+    ADMIN("ADMIN", "관리자"),
+    USER("USER","사용자");
 
-    private String role;
-
+    private final String key;
+    private final String title;
 }

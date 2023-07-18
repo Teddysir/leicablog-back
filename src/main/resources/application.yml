@@ -1,18 +1,36 @@
-#server:
-#  port: 8080
-#spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/moulle
-#    username: root
-#    password: 123456
-#  jpa:
-#    database-platform: org.hibernate.dialect.MySQLDialect
-#    hibernate:
-#      ddl-auto: update
-#    properties:
-#      hibernate:
-#        enable_lazy_load_no_trans: true
-#        show_sql: false
-#        format_sql: true
-#    open-in-view: false
+server:
+  port: 8080
+spring:
+  profiles:
+    active: local
+    include: oauth
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog
+    username: root
+    password: 123456
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        show_sql: false
+        format_sql: true
+    open-in-view: false
+
+
+security:
+  oauth2:
+    client:
+      registration:
+        google:
+          client-id: 808111688256-bv1gf4mc5h4mdip491ro8vara3uqpb9r.apps.googleusercontent.com
+          client-secret: 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
+          scope:
+            - email
+            - profile
+#          redirect-uri: http://localhost:8080/login/oauth2/code/google
+#          token-uri: https://oauth2.googleapis.com/token
+#          resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
