@@ -1,35 +1,42 @@
 package leica.blog.config;
 
-import leica.blog.config.auth.CustomOAuth2UserService;
-import lombok.RequiredArgsConstructor;
+import leica.blog.service.PrincipalOauthMemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfiguration {
+public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
+    @Autowired
+    private  PrincipalOauthMemberService principalOauthMemberService;
 
     @Bean
-    protected void configure(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity
-                .csrf().disable()
+    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/user/**").authenticated()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().permitAll()
+
+                .and()
+                .formLogin()
+                .loginPage("/loginForm")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
+
                 .and()
                 .oauth2Login()
-                .loginPage("/login")
+                .loginPage("/loginForm")
                 .defaultSuccessUrl("/")
-                .failureUrl("/login")
                 .userInfoEndpoint()
-                .userService(customOAuth2UserService);
+                .userService(principalOauthMemberService);
+
+        return http.build();
     }
 
 }
