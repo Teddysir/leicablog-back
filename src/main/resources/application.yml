@@ -1,9 +1,9 @@
 server:
   port: 8080
 spring:
-  profiles:
-    active: local
-    include: oauth
+#  profiles:
+#    active: local
+#    include: oauth
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/blog
