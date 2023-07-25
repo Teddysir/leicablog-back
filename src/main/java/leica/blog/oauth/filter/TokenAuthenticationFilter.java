@@ -27,8 +27,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
 
+    // 실제 비지니스 로직이 실행되기 전에 수행되야할 코드들
+    // 토큰 검증, 인증과 권한 부여
+
     String tokenStr = HeaderUtil.getAccessToken(request);
-    AuthToken token = tokenProvider.convertAuthToken(tokenStr);
+    AuthToken token = tokenProvider.convertAuthToken(tokenStr); //토큰 검증
 
     if(token.validate()) {
         Authentication authentication = tokenProvider.getAuthentication(token);

@@ -71,15 +71,19 @@ public class User {
             @NotNull @Size(max = 64) String userId,
             @NotNull @Size(max = 100) String username,
             @NotNull @Size(max = 512) String email,
+            @NotNull @Size(max = 128) String password,
             @NotNull ProviderType providerType,
             @NotNull RoleType roleType,
-            @NotNull LocalDateTime createdAt
+            @NotNull LocalDateTime createdAt,
+            @NotNull LocalDateTime updatedAt
     ) {
         this.userId = userId;
         this.username = username;
         this.email = email != null ? email : "NO_EMAIL";
+        this.password = "NO_PASS";
         this.providerType = providerType;
         this.roleType = roleType;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }
