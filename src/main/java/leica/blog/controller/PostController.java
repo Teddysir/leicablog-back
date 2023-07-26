@@ -1,14 +1,12 @@
 package leica.blog.controller;
 
 import leica.blog.dto.PostDto;
+import leica.blog.dto.PostUpdateDto;
 import leica.blog.entity.Post;
 import leica.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +25,17 @@ public class PostController {
     @GetMapping("/post")
     public List<Post> findAllPost(){
         return postService.findAllPost();
+    }
+
+    @PutMapping("/admin/post/{id}")
+    public ResponseEntity<String> updatePost(@PathVariable Long id, @RequestBody PostUpdateDto dto){
+        postService.updatePost(id,dto);
+        return ResponseEntity.ok("게시물이 수정되었습니다.");
+    }
+
+    @DeleteMapping("/admin/post/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable Long id){
+        postService.deletePost(id);
+        return ResponseEntity.ok("게시물이 삭제되었습니다.");
     }
 }

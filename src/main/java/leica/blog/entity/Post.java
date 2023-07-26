@@ -31,6 +31,11 @@ public class Post {
         this.content = content;
     }
 
+    public void update(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
+
 
 
 //    private String video; // S3올릴때 동영상은 무슨 타입으로 받을까?
