@@ -1,5 +1,6 @@
 jwt:
-  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+#  HS256알고리즘을 사용하기 위해서 256바이트보다 커야한다!
+  secret: AEFLFMVOSEKGLMFNawejn8789023k45mnawlekmwoi34nj2k5
 server:
   port: 8080
 spring:
@@ -18,3 +19,8 @@ spring:
         show_sql: true
         format_sql: true
     open-in-view: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
