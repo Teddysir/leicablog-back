@@ -20,13 +20,15 @@ public class S3FilUploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-//    private String defaultUrl = "https://s3.amazonaws.com/";
+    @Value("${cloud.aws.s3.default-url}")
+    private String defaultUrl;
 
     public String uploadFile(MultipartFile file) throws IOException{
         String fileName = generateFileName(file);
+        String imageUrl = defaultUrl + fileName;
         try {
             s3Client.putObject(bucketName, fileName, file.getInputStream(), getObjectMetadata(file));
-            return fileName;
+            return imageUrl;
         } catch (SdkClientException e) {
             throw new IOException("S3에 파일 업로드를 실패하였습니다.",e);
         }
@@ -40,6 +42,6 @@ public class S3FilUploadService {
     }
 
     private String generateFileName(MultipartFile file){
-        return UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        return file.getOriginalFilename();
     }
 }

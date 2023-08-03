@@ -25,6 +25,7 @@ cloud:
       auto: false
     s3:
       bucket: krleicablog-bucket
+      default-url: https://krleicablog-bucket.s3.ap-northeast-2.amazonaws.com/
 
 iamAccessKey: AKIA5HGLAWUGSAFOUSTQ
 iamSecretKey: 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
