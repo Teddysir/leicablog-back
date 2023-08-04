@@ -7,7 +7,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://krleicadb.ccskuoixe9iy.ap-northeast-2.rds.amazonaws.com:3306/krleicadb
     username: admin
-    password: 1234567
+    password: jsnm0719
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
