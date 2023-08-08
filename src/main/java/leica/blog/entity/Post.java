@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "post")
-public class Post {
+public class Post extends PostTime{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +24,8 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Column
-    private String imageKey;
+//    @Column
+//    private String imageKey;
 
     @Builder
     public Post(String title, String content) {
