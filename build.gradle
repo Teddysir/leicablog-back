@@ -29,6 +29,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation "org.springframework.boot:spring-boot-starter-jdbc"
 
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.29'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation("org.junit.vintage:junit-vintage-engine") {
 		exclude group: "org.hamcrest", module: "hamcrest-core"
