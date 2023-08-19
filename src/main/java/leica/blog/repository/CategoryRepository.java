@@ -9,6 +9,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Category findByName(String name);
-    @Query("SELECT c FROM Category c LEFT JOIN c.parent p ORDER BY p.id ASC NULLS FIRST, c.id ASC")
-    List<Category> findAllOrderByParentIdAscNullsFirstCategoryIdAsc();
+    @Query("SELECT c FROM Category c WHERE c.parent is NULL")
+    List<Category> findAll();
+
 }

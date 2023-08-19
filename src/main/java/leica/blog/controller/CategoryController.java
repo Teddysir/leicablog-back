@@ -3,6 +3,7 @@ package leica.blog.controller;
 import leica.blog.dto.RequestCreateCategoryDto;
 import leica.blog.dto.ResponseFindAllCategoryDto;
 import leica.blog.entity.Category;
+import leica.blog.repository.CategoryRepository;
 import leica.blog.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
     @PostMapping("/create")
     public ResponseEntity<String> createCategory(@RequestBody RequestCreateCategoryDto requestCreateCategoryDto){
@@ -29,7 +31,7 @@ public class CategoryController {
 
     @GetMapping("/findAll")
     public List<ResponseFindAllCategoryDto> findAll(){
-        List<ResponseFindAllCategoryDto> all = categoryService.findAll();
+        List<ResponseFindAllCategoryDto> all = categoryService.getCategoryList();
 
         return all;
     }

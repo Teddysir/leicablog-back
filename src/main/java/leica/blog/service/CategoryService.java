@@ -18,22 +18,10 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-
-    public List<ResponseFindAllCategoryDto> findAll(){
-        List<Category> categoryList = categoryRepository.findAllOrderByParentIdAscNullsFirstCategoryIdAsc();
-
-        List<ResponseFindAllCategoryDto> collect = categoryList.stream().map(category -> {
-            String parentName = category.getParent() != null ? category.getParent().getName() : null;
-
-            return ResponseFindAllCategoryDto.builder()
-                    .id(category.getId())
-                    .name(category.getName())
-                    .parentName(parentName)
-                    .build();
-        }).collect(Collectors.toList());
-
-
-        return collect;
+    @Transactional(rollbackFor = Exception.class)
+    public List<ResponseFindAllCategoryDto> getCategoryList() {
+        List<ResponseFindAllCategoryDto> results = categoryRepository.findAll().stream().map(ResponseFindAllCategoryDto::of).collect(Collectors.toList());
+        return results;
     }
     public Category createCategory(String name, String parentName){
         Category newCategory;
