@@ -29,6 +29,11 @@ public class PostController {
         return postService.findAllPost();
     }
 
+    @GetMapping("/post/{id}") // 이런식으로 하나만 전달해주는건?
+    public Long findOnePost(@PathVariable Long id){
+        return postService.findOnePost(id);
+    }
+
     @PutMapping("/admin/post/{id}")
     public ResponseEntity<String> updatePost(@PathVariable Long id, @RequestBody PostUpdateDto dto){
         postService.updatePost(id,dto);
