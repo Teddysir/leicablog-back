@@ -24,13 +24,19 @@ public class Post extends PostTime{
     @Column(nullable = false)
     private String content;
 
+   @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+
+    private Category category;
+
 //    @Column
 //    private String imageKey;
 
     @Builder
-    public Post(String title, String content) {
+    public Post(String title, String content, Category category) {
         this.title = title;
         this.content = content;
+        this.category = category;
     }
 
     public void update(String title, String content){
@@ -42,10 +48,8 @@ public class Post extends PostTime{
 
 //    private String video; // S3올릴때 동영상은 무슨 타입으로 받을까?
 
-//    @ManyToOne()
-//    @JoinColumn(name = "category_id")
-//    private Category category_id;
-//
+
+
 //    @OneToMany(mappedBy = "comment_id")
 //    private List<Comment> comments = new ArrayList<>();
 }

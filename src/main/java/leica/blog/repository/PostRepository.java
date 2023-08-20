@@ -10,4 +10,9 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderById();
     List<Post> findByTitleContainingOrContentContaining(String keyword, String keyword2);
+
+    List<Post> findByCategoryName(String name);
+
+//    List<Post> findAllOrderByCreateAt();
 }
+

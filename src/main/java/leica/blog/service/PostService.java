@@ -2,28 +2,68 @@ package leica.blog.service;
 
 import leica.blog.dto.PostDto;
 import leica.blog.dto.PostUpdateDto;
+import leica.blog.dto.ResponseAllPostByCategory;
+import leica.blog.entity.Category;
 import leica.blog.entity.Post;
+import leica.blog.repository.CategoryRepository;
 import leica.blog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public Long createPost(PostDto dto) {
-        return postRepository.save(dto.toEntity()).getId();
+        Category byName = categoryRepository.findByName(dto.getCategoryName());
+        Post entity = dto.toEntity(byName);
+
+        return postRepository.save(entity).getId();
     }
 
     @Transactional
-    public List<Post> findAllPost() {
-        return postRepository.findAllByOrderById();
+    public List<PostDto> findAllPost() {
+        List<Post> all = postRepository.findAll();
+        List<PostDto> collect = all.stream().map(post ->
+        {
+            Category parent = post.getCategory().getParent();
+            Category category = post.getCategory();
+
+            return PostDto.builder()
+                    .parentCategory(parent.getName())
+                    .category(category.getName())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .createdAt(post.getCreate_at())
+                    .modifiedAt(post.getModified_at())
+                    .build();
+        }).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Transactional
+    public Map<Integer, List<ResponseAllPostByCategory>> findAllPost(String categoryName) {
+        Map<Integer, List<ResponseAllPostByCategory>> response = new HashMap<>();
+        List<Post> byCategoryName = postRepository.findByCategoryName(categoryName);
+        int postCount = byCategoryName.size();
+        List<ResponseAllPostByCategory> collect = byCategoryName.stream().map(post -> ResponseAllPostByCategory.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .create_at(post.getCreate_at())
+                .build()).collect(Collectors.toList());
+
+        response.put(postCount, collect);
+        return response;
     }
 
     @Transactional

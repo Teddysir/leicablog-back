@@ -2,6 +2,7 @@ package leica.blog.controller;
 
 import leica.blog.dto.PostDto;
 import leica.blog.dto.PostUpdateDto;
+import leica.blog.dto.ResponseAllPostByCategory;
 import leica.blog.entity.Post;
 import leica.blog.service.PostService;
 import leica.blog.service.SearchService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +27,12 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public List<Post> findAllPost(){
+    public List<PostDto> findAllPost(){
         return postService.findAllPost();
+    }
+    @GetMapping("{category}/post")
+    public Map<Integer, List<ResponseAllPostByCategory>> findAllPost(@PathVariable String category){
+        return postService.findAllPost(category);
     }
 
     @PutMapping("/admin/post/{id}")
