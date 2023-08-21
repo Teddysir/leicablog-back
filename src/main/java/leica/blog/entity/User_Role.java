@@ -12,5 +12,5 @@
 //    private Member member_id;
 //
 //    @OneToOne
-//    private Role role_id;
+//    private User_Role role_id;
 //}
