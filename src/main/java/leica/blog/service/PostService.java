@@ -72,6 +72,14 @@ public class PostService {
     }
 
     @Transactional
+    public Long findOnePost(Long id) { // id값만 리턴해주면 되려나?
+        Post post = postRepository.findById(id).orElseThrow(
+                ()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
+        );
+        return id;
+    }
+
+    @Transactional
     public Long updatePost(Long id, PostUpdateDto dto) {
         Post post = postRepository.findById(id).orElseThrow(
                 ()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
