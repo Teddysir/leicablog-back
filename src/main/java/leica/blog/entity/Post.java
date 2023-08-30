@@ -26,7 +26,6 @@ public class Post extends PostTime{
 
    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-
     private Category category;
 
 //    @Column

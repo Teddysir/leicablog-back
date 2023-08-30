@@ -20,11 +20,11 @@ public class PostDto {
     private Timestamp modifiedAt;
 
     @Builder
-    public PostDto(String title, String content, String category , String parentCategory, Timestamp createdAt, Timestamp modifiedAt){
+    public PostDto(String title, String content, String category , String parentCategoryName, Timestamp createdAt, Timestamp modifiedAt){
         this.title = title;
         this.content = content;
         this.categoryName = category;
-        this.parentCategoryName = parentCategory;
+        this.parentCategoryName = parentCategoryName;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
