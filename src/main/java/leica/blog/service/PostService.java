@@ -33,35 +33,44 @@ public class PostService {
     }
 
     @Transactional
-    public List<PostDto> findAllPost() {
+    public Map<Integer, List<PostDto>> findAllPost() {
         List<Post> all = postRepository.findAll();
-        List<PostDto> collect = all.stream().map(post ->
-        {
-            Category parent = post.getCategory().getParent();
-            Category category = post.getCategory();
+        int listSize = all.size();
+        if (listSize == 0){
+            return new HashMap<>();
+        }else{
+            Map<Integer, List<PostDto>> response = new HashMap<>();
+            List<PostDto> collect = all.stream().map(post ->
+            {
+                Category parent = post.getCategory().getParent();
+                Category category = post.getCategory();
 
-            return PostDto.builder()
-                    .parentCategory(parent.getName())
-                    .category(category.getName())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .createdAt(post.getCreate_at())
-                    .modifiedAt(post.getModified_at())
-                    .build();
-        }).collect(Collectors.toList());
-
-        if (collect.isEmpty()) {
-            return new ArrayList<>(); // 빈 리스트 반환
+                return PostDto.builder()
+                        .parentCategoryName(parent.getName())
+                        .category(category.getName())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .createdAt(post.getCreate_at())
+                        .modifiedAt(post.getModified_at())
+                        .build();
+            }).collect(Collectors.toList());
+            response.put(listSize, collect);
+            return response;
         }
-        return collect;
     }
 
+    // 카테고리별 게시물 반환
     @Transactional
     public Map<Integer, List<ResponseAllPostByCategory>> findAllPost(String categoryName) {
         Map<Integer, List<ResponseAllPostByCategory>> response = new HashMap<>();
-        List<Post> byCategoryName = postRepository.findByCategoryName(categoryName);
-        int postCount = byCategoryName.size();
-        List<ResponseAllPostByCategory> collect = byCategoryName.stream().map(post -> ResponseAllPostByCategory.builder()
+        Category category = categoryRepository.findByName(categoryName);
+
+        List<Post> postsInCategoryAndChildren = new ArrayList<>();
+        findAllPostsInCategoryAndChildrenRecursively(category, postsInCategoryAndChildren);
+
+        int postCount = postsInCategoryAndChildren.size();
+
+        List<ResponseAllPostByCategory> collect = postsInCategoryAndChildren.stream().map(post -> ResponseAllPostByCategory.builder()
                 .title(post.getTitle())
                 .content(post.getContent())
                 .create_at(post.getCreate_at())
@@ -71,13 +80,42 @@ public class PostService {
         return response;
     }
 
-    @Transactional
-    public Long findOnePost(Long id) { // id값만 리턴해주면 되려나?
-        Post post = postRepository.findById(id).orElseThrow(
-                ()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
-        );
-        return id;
+    private void findAllPostsInCategoryAndChildrenRecursively(Category category, List<Post> result) {
+        if (category != null) {
+            for (Post post : postRepository.findByCategoryName(category.getName())) {
+                result.add(post);
+            }
+            for (Category child : category.getChildren()) {
+                findAllPostsInCategoryAndChildrenRecursively(child, result);
+            }
+        }
     }
+
+
+
+    public Map<Integer, List<PostDto>> findAllPost(String parentCategory, String childCategory) {
+        Category category = categoryRepository.findByName(childCategory);
+        List<Post> postList = postRepository.findByCategoryName(category.getName());
+        int postCount = postList.size();
+
+        if (postCount == 0){
+            return new HashMap<>();  // 빈 hashmap 반환
+        }else{
+
+            List<PostDto> postDtoList = postList.stream().map(post -> PostDto.builder()
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .category(post.getCategory().getName())
+                    .parentCategoryName(post.getCategory().getParent().getName())
+                    .createdAt(post.getCreate_at())
+                    .modifiedAt(post.getModified_at())
+                    .build()).collect(Collectors.toList());
+            HashMap<Integer, List<PostDto>> hashMap = new HashMap<>();
+            hashMap.put(postCount, postDtoList);
+            return hashMap;
+        }
+    }
+
 
     @Transactional
     public Long updatePost(Long id, PostUpdateDto dto) {
@@ -95,4 +133,6 @@ public class PostService {
         );
         postRepository.delete(post);
     }
+
+
 }
