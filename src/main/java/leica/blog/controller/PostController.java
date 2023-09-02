@@ -1,16 +1,16 @@
 package leica.blog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import leica.blog.dto.PostDto;
 import leica.blog.dto.PostUpdateDto;
-import leica.blog.dto.ResponseAllPostByCategory;
 import leica.blog.service.PostService;
 import leica.blog.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,24 +22,30 @@ public class PostController {
 
     // 전체 게시물 GET (썸네일 이미지 추가해야함!)
     @GetMapping("/post")
-    public Map<Integer, List<PostDto>> findAllPost(){
+    public String findAllPost() throws JsonProcessingException {
         return postService.findAllPost();
     }
 
     // 게시물 생성
     @PostMapping("/admin/post")
     public ResponseEntity<String> createPost(@RequestBody PostDto postDto){
-        postService.createPost(postDto);
-        return ResponseEntity.ok("게시물이 생성되었습니다.");
+        try{
+            postService.createPost(postDto);
+            return ResponseEntity.ok("게시물이 생성되었습니다.");
+
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 카테고리입니다.");
+        }
+
     }
 
     // 카테고리별 게시물 조회
     @GetMapping("/{parentCategory}")
-    public Map<Integer, List<ResponseAllPostByCategory>> findPostInParentCategory(@PathVariable String parentCategory){
+    public String findPostInParentCategory(@PathVariable String parentCategory) throws JsonProcessingException {
         return postService.findAllPost(parentCategory);
     }
     @GetMapping("/{parentCategory}/{childCategory}")
-    public Map<Integer, List<PostDto>> findPostInChildCategory(@PathVariable String parentCategory, @PathVariable String childCategory){
+    public String findPostInChildCategory(@PathVariable String parentCategory, @PathVariable String childCategory) throws JsonProcessingException {
         return postService.findAllPost(parentCategory, childCategory);
     }
 
@@ -60,8 +66,8 @@ public class PostController {
 
     // 게시물 검색(완성)
     @GetMapping("/api/post/search")
-    public Map<Integer, List<PostDto>> searchPost(@RequestParam(value = "keyword")String keyword){
-        Map<Integer, List<PostDto>> posts = searchService.SearchPost(keyword);
+    public String searchPost(@RequestParam(value = "keyword")String keyword) throws JsonProcessingException {
+        String posts = searchService.SearchPost(keyword);
 
         return posts;
     }

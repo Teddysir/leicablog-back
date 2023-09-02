@@ -1,6 +1,9 @@
 package leica.blog.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import leica.blog.dto.PostDto;
+import leica.blog.dto.ResponsePostResult;
 import leica.blog.entity.Post;
 import leica.blog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,7 @@ public class SearchService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Map<Integer, List<PostDto>> SearchPost (String keyword){
+    public String SearchPost (String keyword) throws JsonProcessingException {
         Map<Integer, List<PostDto>> response = new HashMap<>();
         List<Post> postList = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
         int listSize = postList.size();
@@ -34,7 +37,11 @@ public class SearchService {
                             .build())
                 .collect(Collectors.toList());
 
-        response.put(listSize, collect);
-        return response;
+        ResponsePostResult responsePostResult = new ResponsePostResult(listSize, collect);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String value = objectMapper.writeValueAsString(responsePostResult);
+
+        return value;
     }
 }
