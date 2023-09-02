@@ -24,7 +24,10 @@ public class Post extends PostTime{
     @Column(nullable = false)
     private String content;
 
-   @ManyToOne(fetch = FetchType.LAZY)
+    @Column
+    private String parentCategoryName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -36,7 +39,11 @@ public class Post extends PostTime{
         this.title = title;
         this.content = content;
         this.category = category;
+        if (category != null) {
+            this.parentCategoryName = category.getParent() != null ? category.getParent().getName() : null;
+        }
     }
+
 
     public void update(String title, String content){
         this.title = title;

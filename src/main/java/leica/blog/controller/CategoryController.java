@@ -2,16 +2,13 @@ package leica.blog.controller;
 
 import leica.blog.dto.RequestCreateCategoryDto;
 import leica.blog.dto.ResponseFindAllCategoryDto;
-import leica.blog.entity.Category;
+import leica.blog.error.DuplicateCategoryException;
 import leica.blog.repository.CategoryRepository;
 import leica.blog.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.http.HttpResponse;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/category")
@@ -23,16 +20,23 @@ public class CategoryController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createCategory(@RequestBody RequestCreateCategoryDto requestCreateCategoryDto){
-        String name = requestCreateCategoryDto.getName();
-        String parentName = requestCreateCategoryDto.getParentName();
-        categoryService.createCategory(name, parentName);
+
+        try{
+            String name = requestCreateCategoryDto.getName();
+            String parentName = requestCreateCategoryDto.getParentName();
+            categoryService.createCategory(name, parentName);
+
+        }catch (DuplicateCategoryException e) {
+            // 중복된 카테고리 에러 처리
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복된 카테고리 이름입니다.");
+        }
         return ResponseEntity.ok("created!");
     }
 
-    @GetMapping("/findAll")
-    public List<ResponseFindAllCategoryDto> findAll(){
-        List<ResponseFindAllCategoryDto> all = categoryService.getCategoryList();
-
-        return all;
+    @GetMapping("/{categoryName}")
+    public ResponseFindAllCategoryDto findAll(@PathVariable String categoryName){
+//        List<ResponseFindAllCategoryDto> all = categoryService.getCategoryList(categoryName);
+        ResponseFindAllCategoryDto categoryList = categoryService.getCategoryList(categoryName);
+        return categoryList;
     }
 }

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class PostDto {
+    private String thumbnail;
     private String title;
     private String content;
     private String categoryName;
@@ -20,7 +21,8 @@ public class PostDto {
     private Timestamp modifiedAt;
 
     @Builder
-    public PostDto(String title, String content, String category , String parentCategoryName, Timestamp createdAt, Timestamp modifiedAt){
+    public PostDto(String thumbnail, String title, String content, String category , String parentCategoryName, Timestamp createdAt, Timestamp modifiedAt){
+        this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
         this.categoryName = category;
